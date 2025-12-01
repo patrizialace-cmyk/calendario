@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario dell'Avvento Motivazionale</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-blue-200 via-white to-blue-200 min-h-screen">
+  <div id="root"></div>
+
+  <script>
+    const { useState, useEffect } = React;
+    const { motion } = window['framer-motion'];
+
+    const TOTAL = 24;
+    const MUSIC_URL = "musica_natalizia.mp3"; // Inserisci qui il tuo file musica
+
+    const defaultMessages = Array.from({ length: TOTAL }, (_, i) => `Messaggio motivazionale della casella ${i+1}.`);
+
+    function AdventCalendar(){
+      const [opened, setOpened] = useState(() => {
+        try {
+          const raw = localStorage.getItem("adv_opened_v1");
+          if (!raw) return Array(TOTAL).fill(false);
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed) || parsed.length !== TOTAL) return Array(TOTAL).fill(false);
+          return parsed;
+        } catch {
+          return Array(TOTAL).fill(false);
+        }
+      });
+
+      const [messages] = useState(defaultMessages);
+
+      useEffect(() => {
+        localStorage.setItem("adv_opened_v1", JSON.stringify(opened));
+      }, [opened]);
+
+      function toggleBox(i){
+        setOpened(prev => {
+          const copy = [...prev];
+          copy[i] = !copy[i];
+          return copy;
+        });
+      }
+
+      function resetAll(){
+        if (!window.confirm("Reimpostare tutte le caselle?")) return;
+        setOpened(Array(TOTAL).fill(false));
+        localStorage.removeItem("adv_opened_v1");
+      }
+
+      return (
+        React.createElement("div", { className: "relative" },
+
+          React.createElement("div", { className: "pointer-events-none absolute inset-0 overflow-hidden" },
+            Array.from({ length: 40 }).map((_, i) =>
+              React.createElement(motion.div, {
+                key: i,
+                initial: { opacity: 0, y: -20 },
+                animate: { opacity: 1, y: "100vh" },
+                transition: {
+                  duration: 6 + Math.random()*6,
+                  repeat: Infinity,
+                  delay: Math.random()*5
+                },
+                className: "absolute text-white text-2xl drop-shadow-md",
+                style: { left: `${Math.random()*100}%` }
+              }, "❄️")
+            )
+          ),
+
+          React.createElement("div", { className: "relative w-full bg-gradient-to-r from-red-400 to-red-600 text-white py-10 shadow-xl mb-6 overflow-hidden" },
+            React.createElement("div", {
+              className: "absolute inset-0 opacity-20",
+              style: { backgroundImage: "url('https://i.imgur.com/g0I8F8O.png')", backgroundSize: "cover", backgroundPosition: "center" }
+            }),
+            React.createElement("div", { className: "relative z-10 max-w-5xl mx-auto text-center px-4" },
+              React.createElement("h1", { className: "text-5xl font-extrabold drop-shadow-lg" }, "🎄 Calendario dell'Avvento Motivazionale"),
+              React.createElement("p", { className: "mt-2 text-lg drop-shadow-sm" }, "Un viaggio illustrato, musicale e ispirante verso il Natale ✨")
+            )
+          ),
+
+          React.createElement("div", { className: "fixed bottom-4 right-4 bg-white/80 backdrop-blur-md p-3 rounded-xl shadow-lg border border-slate-200 z-50" },
+            React.createElement("p", { className: "text-sm mb-1 text-slate-700 font-semibold" }, "Musica natalizia"),
+            React.createElement("audio", { controls: true, loop: true, src: MUSIC_URL, className: "w-48" })
+          ),
+
+          React.createElement("div", { className: "relative max-w-5xl mx-auto p-6" },
+            React.createElement("header", { className: "flex justify-end mb-4" },
+              React.createElement("button", {
+                onClick: resetAll,
+                className: "px-3 py-1 rounded-lg shadow-md bg-white/70 hover:bg-white transition ring-1 ring-slate-300"
+              }, "Reimposta")
+            ),
+
+            React.createElement("section", { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" },
+              Array.from({ length: TOTAL }).map((_, idx) => {
+                const isOpen = opened[idx];
+                return React.createElement(motion.button, {
+                  key: idx,
+                  onClick: () => toggleBox(idx),
+                  whileHover: { scale: 1.05 },
+                  whileTap: { scale: 0.95 },
+                  className:
+                    "relative aspect-square rounded-2xl p-4 flex items-center justify-center text-center shadow-lg border backdrop-blur-md transition " +
+                    (isOpen ? "bg-white/80 border-blue-200" : "bg-blue-700 text-white border-blue-800")
+                },
+                  !isOpen ? (
+                    React.createElement("div", { className: "flex flex-col items-center" },
+                      React.createElement("span", { className: "text-3xl font-bold drop-shadow" }, idx+1),
+                      React.createElement("small", { className: "text-xs mt-1 opacity-90" }, "Apri ✨")
+                    )
+                  ) : (
+                    React.createElement("div", { className: "px-1" },
+                      React.createElement("p", { className: "text-sm leading-tight text-slate-800 drop-shadow-sm" }, messages[idx]),
+                      React.createElement("div", { className: "mt-3 text-xs text-blue-600" }, `Casella ${idx+1}`),
+                      React.createElement("div", { className: "text-lg mt-1" }, "⭐")
+                    )
+                  )
+                );
+              })
+            ),
+
+            React.createElement("footer", { className: "mt-6 text-sm text-slate-600 text-center" },
+              "Illustrazioni, musica e colori possono essere personalizzati liberamente!"
+            )
+          )
+        )
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(AdventCalendar));
+  </script>
+</body>
+</html>
