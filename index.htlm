@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario dell'Avvento Motivazionale</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(180deg, #9b1c31, #f0c4d7);
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: url('https://i.imgur.com/zYf4d6s.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      backdrop-filter: blur(6px);
+      font-size: 1.3rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .message.visible {
+      opacity: 1;
+    }
+
+    /* Music Player */
+    .player {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 12px 18px;
+      border-radius: 14px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Snow effect */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1rem;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎄 Calendario dell'Avvento Motivazionale 🎄</h1>
+</header>
+
+<div class="calendar" id="calendar"></div>
+
+<div class="player">
+  <audio controls loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/12/01/audio_9e92e45e6a.mp3?filename=christmas-ambient-128379.mp3" type="audio/mpeg" />
+  </audio>
+</div>
+
+<script>
+  const phrases = [
+    "Sei al primo passo: il viaggio inizia qui!",
+    "Ottimo! Continua così, il meglio deve ancora venire.",
+    "Non fermarti ora, la magia cresce ogni giorno!",
+    "La tua costanza è la tua forza.",
+    "Stai costruendo qualcosa di bellissimo.",
+    "Avanti! Ogni giorno conta.",
+    "La tua energia illumina tutto ciò che fai.",
+    "Coraggio… sorprendi te stessa!",
+    "Ogni casella è un dono che fai a te.",
+    "La motivazione è con te.",
+    "Continua: sei sulla strada giusta.",
+    "La tua determinazione è ammirevole.",
+    "Non smettere di brillare.",
+    "Un altro giorno, un altro passo.",
+    "Credi in te: stai andando alla grande.",
+    "La magia del Natale cresce con te.",
+    "La tua costanza ti porta lontano.",
+    "Oggi meriti un sorriso.",
+    "Sei più forte di quanto credi.",
+    "Ancora un passo: sei meravigliosa.",
+    "La tua disciplina è una superpower.",
+    "Respira: tutto sta fiorendo.",
+    "Quasi alla fine: continua così.",
+    "Hai completato questo viaggio: orgogliosissima di te!"
+  ];
+
+  const calendar = document.getElementById("calendar");
+
+  phrases.forEach((phrase, i) => {
+    const box = document.createElement("div");
+    box.className = "box";
+    box.textContent = i + 1;
+
+    const message = document.createElement("div");
+    message.className = "message";
+    message.textContent = phrase;
+
+    box.addEventListener("click", () => {
+      message.classList.toggle("visible");
+    });
+
+    box.appendChild(message);
+    calendar.appendChild(box);
+  });
+
+  /* Snowflakes */
+  function createSnowflake() {
+    const snowflake = document.createElement("div");
+    snowflake.className = "snowflake";
+    snowflake.textContent = "❄";
+    snowflake.style.left = Math.random() * 100 + "vw";
+    snowflake.style.animationDuration = 4 + Math.random() * 6 + "s";
+    snowflake.style.fontSize = 0.8 + Math.random() * 1.2 + "rem";
+    document.body.appendChild(snowflake);
+    setTimeout(() => snowflake.remove(), 10000);
+  }
+  setInterval(createSnowflake, 200);
+</script>
+
+</body>
+</html>
